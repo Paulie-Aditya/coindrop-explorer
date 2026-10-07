@@ -7,6 +7,11 @@ set -e
 PROJECT_DIR="/home/ubuntu/coindrop-explorer"
 SERVICE_NAME="coindrop-explorer"
 
+echo "==> Checking port 8002 is free (8000 = api.coindrop.cc, 8001 = coindrop-backend)"
+if sudo ss -tlnp | grep -q ':8002\b'; then
+    echo "    ⚠️  port 8002 is already in use -- pick another and update the service + nginx files"; exit 1
+fi
+
 echo "==> Installing system packages"
 sudo apt-get update -qq
 sudo apt-get install -y python3 python3-venv python3-pip nginx certbot python3-certbot-nginx
@@ -41,7 +46,6 @@ sudo nginx -t
 echo ""
 echo "Done. Next steps:"
 echo "  1. Edit $PROJECT_DIR/.env"
-echo "  2. sudo certbot --nginx -d explorer.coindrop.cc"
-echo "  3. sudo systemctl start $SERVICE_NAME"
-echo "  4. sudo systemctl restart nginx"
-echo "  5. curl https://explorer.coindrop.cc/health"
+echo "  2. sudo systemctl start $SERVICE_NAME && sudo systemctl reload nginx"
+echo "  3. sudo certbot --nginx -d explorer.coindrop.cc   (needs the DNS record live first)"
+echo "  4. curl https://explorer.coindrop.cc/health"

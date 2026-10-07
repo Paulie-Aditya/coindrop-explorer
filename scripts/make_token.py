@@ -5,7 +5,7 @@ Usage:
     EXPLORER_SIGNING_SECRET=test123 python3 scripts/make_token.py
 
 Then hit, e.g.:
-    http://localhost:8001/ltc/<tx_hash below>?d=<printed token>
+    http://localhost:8002/ltc/<tx_hash below>?d=<printed token>
 
 amount/fee are in base units (litoshis here), exactly as withdrawal_queue
 stores them -- the explorer formats them using currencies.decimals.

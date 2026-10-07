@@ -10,7 +10,7 @@ EnvironmentFile=/home/ubuntu/coindrop-explorer/.env
 
 ExecStart=/home/ubuntu/coindrop-explorer/venv/bin/uvicorn main:app \
           --host 127.0.0.1 \
-          --port 8001 \
+          --port 8002 \
           --workers 2 \
           --log-level info
 

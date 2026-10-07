@@ -7,10 +7,10 @@ real chain explorer (Solscan/Etherscan/etc). Renders tx display data the bot
 signs into the URL -- no chain RPC or third-party explorer API calls are made.
 
 Run locally:
-    uvicorn main:app --reload --port 8001
+    uvicorn main:app --reload --port 8002
 
 Production:
-    uvicorn main:app --host 127.0.0.1 --port 8001 --workers 2
+    uvicorn main:app --host 127.0.0.1 --port 8002 --workers 2
 """
 
 from fastapi import FastAPI
