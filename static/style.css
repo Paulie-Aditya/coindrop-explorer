@@ -1,0 +1,596 @@
+/* ============================================================
+   CoinDrop Explorer — tokens and primitives copied from
+   coindrop-web (src/index.css), which carries coindrop.cc's identity:
+   deep royal-blue ground, a single gold accent, Geist + Geist Mono,
+   hairline borders. Keep in step with that file.
+   ============================================================ */
+
+:root {
+  --bg: #1c398e; /* blue-900 */
+  --bg-deep: #162456; /* blue-950 */
+  --bg-raised: #193cb8; /* blue-800 */
+  --panel: rgba(25, 60, 184, 0.3);
+  --panel-hover: rgba(25, 60, 184, 0.45);
+  --line: rgba(20, 71, 230, 0.5);
+  --line-strong: #1447e6;
+
+  --ink: #ffffff;
+  --ink-200: #bedbff;
+  --ink-300: #90c5ff;
+  --ink-500: #54a2ff;
+
+  --gold: #fac800;
+  --gold-bright: #ffe02a;
+  --gold-dim: rgba(250, 200, 0, 0.16);
+  --on-gold: #1c398e;
+
+  --pos: #4ade80;
+  --neg: #ff6568;
+
+  --r-sm: 0.375rem;
+  --r: 0.625rem;
+  --r-lg: 1rem;
+  --ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--gold);
+
+  --maxw: 60rem;
+
+  --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: var(--r-sm);
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--on-gold);
+}
+
+/* ---------- primitives ---------- */
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.muted {
+  color: var(--ink-200);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  --btn-bd: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: var(--r);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: 1px solid var(--btn-bd);
+  transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  --btn-bg: var(--gold);
+  --btn-fg: var(--on-gold);
+}
+.btn--primary:hover {
+  --btn-bg: var(--gold-bright);
+}
+
+.btn--outline {
+  --btn-bd: var(--line-strong);
+}
+.btn--outline:hover {
+  --btn-bg: var(--panel-hover);
+}
+
+.btn--ghost {
+  --btn-fg: var(--ink-200);
+  padding-inline: 0.6rem;
+}
+.btn--ghost:hover {
+  --btn-fg: var(--ink);
+  --btn-bg: var(--panel);
+}
+
+.btn--sm {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+}
+.btn--block {
+  width: 100%;
+}
+
+/* ---------- shell (mirrors coindrop-web PageShell) ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(28, 57, 142, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.header-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.lockup-tag {
+  margin-left: 0.15rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border-radius: 999px;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.site-footer {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.5rem 1.25rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.8rem;
+  color: var(--ink-300);
+}
+.site-footer a:hover {
+  color: var(--gold);
+}
+
+/* ---------- transaction card ---------- */
+
+.tx-wrap {
+  max-width: 30rem;
+  margin: 0 auto;
+}
+
+.tx-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tx-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+.tx-amount {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.15;
+  word-break: break-all;
+}
+.tx-amount span {
+  color: var(--ink-200);
+  font-size: 1.1rem;
+}
+
+.tx-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.tx-hero .muted {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.coin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem 0.3rem 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-200);
+  background: var(--bg-deep);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.coin-chip img {
+  border-radius: 50%;
+}
+.coin-mono {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  font-size: 0.65rem;
+  color: var(--on-gold);
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+/* Hero icon follows #tx[data-state]: spinner while checking/pending,
+   drawn check on confirmed, cross on failed, nothing when status is unknown. */
+.status-icon {
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.25rem;
+}
+.status-icon > * {
+  display: none;
+  grid-area: 1 / 1;
+}
+[data-state="checking"] .spinner,
+[data-state="pending"] .spinner,
+[data-state="not_found"] .spinner {
+  display: block;
+}
+[data-state="confirmed"] .success-check,
+[data-state="failed"] .fail-mark {
+  display: block;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  margin: 6px;
+  border: 3px solid var(--gold-dim);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.success-check,
+.fail-mark {
+  overflow: visible;
+  animation: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.success-check circle,
+.success-check path,
+.fail-mark circle,
+.fail-mark path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.success-check circle,
+.success-check path {
+  stroke: var(--pos);
+}
+.fail-mark circle,
+.fail-mark path {
+  stroke: var(--neg);
+}
+.success-check circle,
+.fail-mark circle {
+  stroke-width: 3;
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  animation: draw 0.5s cubic-bezier(0.65, 0, 0.45, 1) 0.1s forwards;
+}
+.success-check path,
+.fail-mark path {
+  stroke-width: 3.5;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: draw 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.55s forwards;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Status pill */
+.status-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  text-align: right;
+}
+
+.status-pill {
+  --tone: var(--ink-300);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  border-radius: 999px;
+}
+.status-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+[data-state="checking"] .status-pill .dot,
+[data-state="pending"] .status-pill .dot,
+[data-state="not_found"] .status-pill .dot {
+  animation: blink 1.2s ease-in-out infinite;
+}
+[data-state="pending"] .status-pill,
+[data-state="not_found"] .status-pill {
+  --tone: var(--gold);
+}
+[data-state="confirmed"] .status-pill {
+  --tone: var(--pos);
+}
+[data-state="failed"] .status-pill {
+  --tone: var(--neg);
+}
+
+.status-source {
+  font-size: 0.72rem;
+  color: var(--ink-300);
+}
+.status-source:empty {
+  display: none;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line);
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.88rem;
+}
+
+.breakdown-label {
+  color: var(--ink-200);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-200);
+}
+
+.address-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+}
+
+.address {
+  flex: 1;
+  min-width: 0;
+  word-break: break-all;
+  font-size: 0.85rem;
+}
+
+.copy-btn .i-check,
+.copy-btn.is-copied .i-copy {
+  display: none;
+}
+.copy-btn.is-copied .i-check {
+  display: block;
+}
+
+.hint {
+  margin-top: -0.6rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--ink-300);
+}
+
+/* Reserved for an ad unit; collapses until something is mounted in it. */
+.ad-slot {
+  min-height: 90px;
+  border-radius: var(--r);
+}
+.ad-slot:empty {
+  display: none;
+}
+
+/* ---------- admin stats ---------- */
+
+.stats-page {
+  width: 100%;
+  max-width: 45rem;
+  margin: 0 auto;
+}
+
+.stats-page h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+
+.stats-page section {
+  margin-bottom: 2rem;
+}
+
+.stats-page h2 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+  margin-bottom: 0.75rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  color: var(--ink-200);
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .tx-card {
+    padding: 1.15rem;
+  }
+  .tx-amount {
+    font-size: 1.6rem;
+  }
+  .main {
+    padding-top: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

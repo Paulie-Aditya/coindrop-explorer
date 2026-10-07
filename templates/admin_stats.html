@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Stats · CoinDrop Explorer{% endblock %}
+
+{% block content %}
+<div class="stats-page">
+    <h1>Explorer visits</h1>
+
+    <section>
+        <h2>Last 14 days, by chain</h2>
+        <table>
+            <thead>
+                <tr><th>Date</th><th>Chain</th><th>Visits</th><th>Verified</th></tr>
+            </thead>
+            <tbody>
+                {% for row in by_chain_day %}
+                <tr>
+                    <td>{{ row.day }}</td>
+                    <td>{{ row.chain_slug or "?" }}</td>
+                    <td>{{ row.visits }}</td>
+                    <td>{{ row.verified }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No visits yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Top transactions</h2>
+        <table>
+            <thead>
+                <tr><th>Chain</th><th>Tx hash</th><th>Visits</th></tr>
+            </thead>
+            <tbody>
+                {% for row in top_tx %}
+                <tr>
+                    <td>{{ row.chain_slug or "?" }}</td>
+                    <td class="mono">{{ row.tx_hash }}</td>
+                    <td>{{ row.visits }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3">No visits yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Token verification</h2>
+        <p>{{ verified_count }} verified &middot; {{ unverified_count }} unverified (last 14 days)</p>
+    </section>
+</div>
+{% endblock %}

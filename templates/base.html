@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1c398e">
+    <meta name="robots" content="noindex">
+    <title>{% block title %}CoinDrop Explorer{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="apple-touch-icon" href="/static/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=3">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="https://coindrop.cc" class="lockup">
+                <img src="/static/logo.webp" width="25" height="25" alt="" draggable="false">
+                CoinDrop
+                <span class="lockup-tag">Explorer</span>
+            </a>
+            <a href="https://wallet.coindrop.cc" class="btn btn--ghost btn--sm">
+                Web Wallet
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+            </a>
+        </div>
+    </header>
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <span>&copy; CoinDrop</span>
+        <a href="https://coindrop.cc">coindrop.cc</a>
+        <a href="https://discord.gg/2uBWkkQjVC" rel="noopener">Support</a>
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

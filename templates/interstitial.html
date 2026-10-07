@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% macro copy_btn(value) -%}
+<button type="button" class="btn btn--outline btn--sm copy-btn" data-copy="{{ value }}" aria-label="Copy">
+    <svg class="i-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V11a2 2 0 0 1 2-2Z M5 15H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1"/></svg>
+    <svg class="i-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+    <span class="copy-label">Copy</span>
+</button>
+{%- endmacro %}
+
+{% block title %}{{ symbol }} Transaction · CoinDrop Explorer{% endblock %}
+
+{% block content %}
+<div class="tx-wrap">
+    <div class="panel tx-card" id="tx" data-state="checking"
+         data-status-url="/api/status/{{ coin_slug }}/{{ tx_hash }}"
+         data-verified="{{ 'true' if verified else 'false' }}"
+         data-confirmed-at-send="{{ 'true' if confirmed_at_send else 'false' }}"
+         data-chain="{{ chain_name }}">
+        <div class="tx-hero">
+            <div class="status-icon" aria-hidden="true">
+                <span class="spinner"></span>
+                <svg class="success-check" width="56" height="56" viewBox="0 0 52 52"><circle cx="26" cy="26" r="23"/><path d="M15 27l7 7 16-16"/></svg>
+                <svg class="fail-mark" width="56" height="56" viewBox="0 0 52 52"><circle cx="26" cy="26" r="23"/><path d="M18 18l16 16M34 18 18 34"/></svg>
+            </div>
+            <p class="eyebrow" data-role="headline">{{ "Withdrawal sent" if verified else chain_name ~ " transaction" }}</p>
+            {% if verified %}
+            <p class="tx-amount mono">{{ amount }} <span>{{ symbol }}</span></p>
+            {% endif %}
+            <span class="coin-chip">
+                {% if icon %}<img src="{{ icon }}" width="18" height="18" alt="">{% else %}<span class="coin-mono">{{ symbol[:1] }}</span>{% endif %}
+                {{ symbol }} &middot; {{ chain_name }}
+            </span>
+        </div>
+
+        <div class="breakdown">
+            <div class="breakdown-row">
+                <span class="breakdown-label">Status</span>
+                <span class="status-value">
+                    <span class="status-pill" data-role="pill" role="status" aria-live="polite"><span class="dot"></span><span data-role="pill-text">Checking network&hellip;</span></span>
+                    <span class="status-source" data-role="source"></span>
+                </span>
+            </div>
+            <div class="breakdown-row">
+                <span class="breakdown-label">Network</span>
+                <span>{{ chain_name }}</span>
+            </div>
+            {% if verified and fee %}
+            <div class="breakdown-row">
+                <span class="breakdown-label">Network fee</span>
+                <span class="mono">{{ fee }} {{ symbol }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if verified and to_address %}
+        <div class="field">
+            <p class="label">To</p>
+            <div class="address-row">
+                <span class="address mono">{{ to_address }}</span>
+                {{ copy_btn(to_address) }}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="field">
+            <p class="label">Transaction hash</p>
+            <div class="address-row">
+                <span class="address mono">{{ tx_hash }}</span>
+                {{ copy_btn(tx_hash) }}
+            </div>
+        </div>
+
+        <div class="ad-slot"><!-- ad network goes here --></div>
+
+        {% if destination_url %}
+        <a class="btn btn--primary btn--block" href="{{ destination_url }}" rel="nofollow">
+            View complete transaction
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        </a>
+        <p class="hint">Opens {{ destination_url.split('/')[2] }}, the public {{ chain_name }} explorer.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(btn.dataset.copy).then(function () {
+            btn.classList.add("is-copied");
+            btn.querySelector(".copy-label").textContent = "Copied";
+            setTimeout(function () {
+                btn.classList.remove("is-copied");
+                btn.querySelector(".copy-label").textContent = "Copy";
+            }, 1600);
+        }).catch(function () {});
+    });
+});
+
+(function () {
+    var card = document.getElementById("tx");
+    var verified = card.dataset.verified === "true";
+    // The bot only sends this link after confirming success on this chain
+    // (see CONFIRMED_BEFORE_LINK in routers/tx.py), so "no answer" still means confirmed.
+    var confirmedAtSend = card.dataset.confirmedAtSend === "true";
+    var chain = card.dataset.chain;
+    var headline = card.querySelector('[data-role="headline"]');
+    var pillText = card.querySelector('[data-role="pill-text"]');
+    var source = card.querySelector('[data-role="source"]');
+    var MAX_POLLS = 90; // ~15 min at the pending cadence
+    var polls = 0;
+
+    var neutral = verified ? "Withdrawal sent" : chain + " transaction";
+    var copy = {
+        not_found: [verified ? "Waiting for the network" : neutral, "Not on the explorer yet"],
+        pending: ["Waiting for confirmation", "Pending"],
+        confirmed: [verified ? "Withdrawal confirmed" : "Transaction confirmed", "Confirmed"],
+        failed: ["Transaction failed", "Failed"],
+        unavailable: [neutral, "Live status unavailable"]
+    };
+
+    function render(s) {
+        if (confirmedAtSend && (s.state === "unavailable" || s.state === "not_found")) {
+            s = { state: "confirmed", confirmations: null, source: "CoinDrop" };
+        }
+        var c = copy[s.state] || copy.unavailable;
+        card.dataset.state = s.state in copy ? s.state : "unavailable";
+        headline.textContent = c[0];
+        var text = c[1];
+        if (s.state === "confirmed" && s.confirmations) {
+            text += " · " + s.confirmations.toLocaleString() + (s.confirmations === 1 ? " confirmation" : " confirmations");
+        }
+        pillText.textContent = text;
+        source.textContent = s.source ? "via " + s.source : "";
+    }
+
+    function nextDelay(s) {
+        if (s.state === "pending" || s.state === "not_found") return 10000;
+        if (s.state === "confirmed" && s.confirmations && s.confirmations < 6) return 20000;
+        return null; // final, failed, or nothing to poll
+    }
+
+    function poll() {
+        // Always check once on load (links are often opened in background tabs);
+        // only the follow-up polls wait for the tab to be visible.
+        if (polls > 0 && document.hidden) {
+            document.addEventListener("visibilitychange", poll, { once: true });
+            return;
+        }
+        polls++;
+        fetch(card.dataset.statusUrl, { headers: { Accept: "application/json" } })
+            .then(function (r) { return r.json(); })
+            .catch(function () { return { state: "unavailable" }; })
+            .then(function (s) {
+                render(s);
+                var delay = nextDelay(s);
+                if (delay && polls < MAX_POLLS) setTimeout(poll, delay);
+            });
+    }
+
+    poll();
+})();
+</script>
+{% endblock %}

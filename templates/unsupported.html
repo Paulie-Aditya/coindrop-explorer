@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction not found · CoinDrop Explorer{% endblock %}
+
+{% block content %}
+<div class="tx-wrap">
+    <div class="panel tx-card">
+        <div class="tx-hero">
+            <p class="eyebrow">Not found</p>
+            <p class="tx-title">We couldn't open this link</p>
+            <p class="muted">
+                <span class="mono">{{ coin_slug | upper }}</span> isn't a coin CoinDrop Explorer recognises,
+                or the transaction hash in the link is malformed. Check the link from your withdrawal message and try again.
+            </p>
+        </div>
+        <div class="ad-slot"><!-- ad network goes here --></div>
+        <a class="btn btn--outline btn--block" href="https://wallet.coindrop.cc">Open your CoinDrop wallet</a>
+    </div>
+</div>
+{% endblock %}
